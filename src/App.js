@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState} from "react";
 import "./App.css"
 
 function App() {
   
   let Dummydata = [
     { type: 'string', value: 'FirstName',required:true },
-    { type: 'string', value: 'LastName',required:true },
+    { type: 'string', value: 'LastName',required:false },
     { type: 'Object', value: 'Person',required:true, data: [{ type: 'string', value: 'Name',required:true }, { type: 'boolean', value: 'IsMarried',required:true },
     { type: 'Number', value: 'Age',required:true },{ type: 'Object', value: 'Address',required:true, data: [{ type: 'Number', value: 'House No',required:true },{type:'string',value:'Locality',required:true}]},
     ] },
@@ -52,7 +52,7 @@ function App() {
   const UpdateRequiredField = (id) =>{
     let CurrentData= [...data]
     
-    if(id.length==1)
+    if(id.length===1)
     {
       CurrentData[+id].required=!CurrentData[+id].required
       setData(CurrentData)
@@ -78,7 +78,7 @@ function App() {
 
     // console.log(value)
     let CurrentData= [...data]
-    if(id.length==1)
+    if(id.length===1)
     {
       CurrentData[+id].value=value
       setData(CurrentData)
@@ -183,7 +183,7 @@ const DeleteField = (id) =>{
   return ( 
     <div className="App container mt-5">
       <div style={{border:'1px solid #dee2e6'}}>
-        <li className="list-group-item pt-3 mb-2" style={{paddingLeft:'4%'}}>
+        <li key='Item' className="list-group-item pt-3 mb-2" style={{paddingLeft:'4%'}}>
           <div className="d-flex justify-content-between">
             <span>Field name and type</span>
             <div className="d-flex flex-content-between">
@@ -195,10 +195,9 @@ const DeleteField = (id) =>{
         <ul className="list-group" >
         { data &&data?.map((item,index) => {
           return(
-            <>
+            <div key={index+"-"+item}>
             { item.type !=='Object' ?
-              <li 
-              key={""+index} id={""+index} className="list-group-item">
+              <li key={"-"+index} id={""+index} className="list-group-item">
                 <div className="d-flex justify-content-between">
                 <div style={{display:'flex'}}>
                   {/* {console.log(ShowFieldName.get(index))} */}
@@ -219,17 +218,17 @@ const DeleteField = (id) =>{
                 </select>
                 </div>
                 <div className="d-flex actions">
-                  <div class="form-check form-switch" style={{marginRight:'10px'}}>
-                    <input class="form-check-input" onChange={()=>UpdateRequiredField(""+index)} type="checkbox" role="switch" id="flexSwitch" checked={item.required}/>
-                    <label class="form-check-label" for="flexSwitch">Required</label>
+                  <div className="form-check form-switch" style={{marginRight:'10px'}}>
+                    <input className="form-check-input" onChange={()=>UpdateRequiredField(""+index)} type="checkbox" role="switch" id="flexSwitch" checked={item.required}/>
+                    <label className="form-check-label" htmlFor="flexSwitch">Required</label>
                   </div>
                 <div onClick={()=>DeleteField(""+index)}><i className="fa-solid fa-trash"></i></div>
                 </div>
                 </div>
               </li>
               :
-              <>
-              <li key={""+index} id={""+index} className="list-group-item">
+              <div>
+              <li key={"-"+index} id={""+index} className="list-group-item">
                 <div className="d-flex justify-content-between">
                 <div style={{display:'flex'}}>
                 { !ShowFieldName?.get(""+index) ? <span onClick={()=>ToggleShowFieldName(""+index)}>{item.value}</span>: 
@@ -248,9 +247,9 @@ const DeleteField = (id) =>{
                 </select>
                 </div>
                 <div className="d-flex actions">
-                <div class="form-check form-switch" style={{marginRight:'10px'}}>
-                  <input class="form-check-input" onChange={()=>UpdateRequiredField(""+index)} type="checkbox" role="switch" id="flexSwitch" checked={item.required}/>
-                  <label class="form-check-label" for="flexSwitch">Required</label>
+                <div className="form-check form-switch" style={{marginRight:'10px'}}>
+                  <input className="form-check-input" onChange={()=>UpdateRequiredField(""+index)} type="checkbox" role="switch" id="flexSwitch" checked={item.required}/>
+                  <label className="form-check-label" htmlFor="flexSwitch">Required</label>
                 </div>
                 <div onClick={()=>AddField(""+index)} style={{marginRight:'30px'}}className="d-inline"><i className="fa-solid fa-plus"></i></div>
                 <div onClick={()=>DeleteField(""+index)}><i className="fa-solid fa-trash"></i></div>
@@ -267,9 +266,9 @@ const DeleteField = (id) =>{
               DeleteField={DeleteField}
               UpdateRequiredField={UpdateRequiredField}
               parentId={""+index} />
-              </>
+              </div>
             }
-            </>
+            </div>
             )
         })}
         </ul>
@@ -283,14 +282,13 @@ const DeleteField = (id) =>{
 const RecursiveLists =({Items=[],ShowFieldName,ToggleShowFieldName,UpdateFieldValue,UpdateSelectedName,DeleteField,AddField,parentId ,UpdateRequiredField}) =>{
 
   return (
-    <ul className="list-group" style={{ marginLeft: '5%' }}>
+    <ul key='Items'className="list-group" style={{ marginLeft: '5%' }}>
       {
         Items?.map((item,index) => {
           return (
-            <>
-
+            <div key={index+"-"+item}>
             { item.type !=='Object' ?
-              <li key={""+parentId+index} id={parentId+index} className="list-group-item">
+              <li key={`${parentId}-${index}`} id={parentId+index} className="list-group-item">
                 <div className="d-flex justify-content-between">
                 <div style={{display:'flex'}}>
                 { !ShowFieldName?.get(""+parentId+index,'') ? <span onClick={()=>ToggleShowFieldName(""+parentId+index)}>{item.value}</span>: 
@@ -307,17 +305,17 @@ const RecursiveLists =({Items=[],ShowFieldName,ToggleShowFieldName,UpdateFieldVa
                 </select>
                 </div>
                 <div className="d-flex actions">
-                  <div class="form-check form-switch" style={{marginRight:'10px'}}>
-                    <input class="form-check-input" onChange={()=>UpdateRequiredField(""+parentId+index)} type="checkbox" role="switch" id="flexSwitch" checked={item.required}/>
-                    <label class="form-check-label" for="flexSwitch">Required</label>
+                  <div className="form-check form-switch" style={{marginRight:'10px'}}>
+                    <input className="form-check-input" onChange={()=>UpdateRequiredField(""+parentId+index)} type="checkbox" role="switch" id="flexSwitch" checked={item.required}/>
+                    <label className="form-check-label" htmlFor="flexSwitch">Required</label>
                   </div>
                 <div onClick={()=>DeleteField(""+parentId+index)}> <i className="fa-solid fa-trash"></i></div>
                 </div>
                 </div>
               </li>
                 :
-                <>
-                 <li key={""+parentId+index} id={""+parentId+index} className="list-group-item">
+                <div>
+                 <li key={`${parentId}-${index}`} id={""+parentId+index} className="list-group-item">
                   <div className="d-flex justify-content-between">
                 <div style={{display:'flex'}}>
                 { !ShowFieldName?.get(""+parentId+index) ? <span onClick={()=>ToggleShowFieldName(""+parentId+index)}>{item.value}</span>: 
@@ -336,9 +334,9 @@ const RecursiveLists =({Items=[],ShowFieldName,ToggleShowFieldName,UpdateFieldVa
                 </select>
                 </div>
                 <div className="d-flex actions">
-                  <div class="form-check form-switch" style={{marginRight:'10px'}}>
-                    <input class="form-check-input" onChange={()=>UpdateRequiredField(""+parentId+index)} type="checkbox" role="switch" id="flexSwitch" checked={item.required}/>
-                    <label class="form-check-label" for="flexSwitch">Required</label>
+                  <div className="form-check form-switch" style={{marginRight:'10px'}}>
+                    <input className="form-check-input" onChange={()=>UpdateRequiredField(""+parentId+index)} type="checkbox" role="switch" id="flexSwitch" checked={item.required}/>
+                    <label className="form-check-label" htmlFor="flexSwitch">Required</label>
                   </div>
                 <div onClick={()=>AddField(""+parentId+index)} style={{marginRight:'30px'}} className="d-inline"><i className="fa-solid fa-plus"></i></div>
                 <div onClick={()=>DeleteField(""+parentId+index)}> <i className="fa-solid fa-trash"></i></div>
@@ -356,9 +354,9 @@ const RecursiveLists =({Items=[],ShowFieldName,ToggleShowFieldName,UpdateFieldVa
                   UpdateRequiredField={UpdateRequiredField}
                   parentId={""+parentId+index}
                 />
-                </>
+                </div>
               }
-            </>
+            </div>
             )
       })
     }
